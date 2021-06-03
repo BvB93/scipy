@@ -1,8 +1,16 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, TypeVar, Any, Callable, cast
+
 import numpy as np
 from scipy._lib.decorator import decorator as _decorator
 
-__all__ = ['delaunay_plot_2d', 'convex_hull_plot_2d', 'voronoi_plot_2d']
+if TYPE_CHECKING:
+    import numpy.typing as npt
+    import matplotlib.pyplot as plt
+    from scipy.spatial import Delaunay, ConvexHull, Voronoi
 
+__all__ = ['delaunay_plot_2d', 'convex_hull_plot_2d', 'voronoi_plot_2d']
 
 @_decorator
 def _held_figure(func, obj, ax=None, **kw):
@@ -25,7 +33,7 @@ def _held_figure(func, obj, ax=None, **kw):
         ax.hold(was_held)
 
 
-def _adjust_bounds(ax, points):
+def _adjust_bounds(ax: plt.Axes, points: np.ndarray) -> None:
     margin = 0.1 * points.ptp(axis=0)
     xy_min = points.min(axis=0) - margin
     xy_max = points.max(axis=0) + margin
@@ -34,7 +42,10 @@ def _adjust_bounds(ax, points):
 
 
 @_held_figure
-def delaunay_plot_2d(tri, ax=None):
+def delaunay_plot_2d(
+    tri: Delaunay,
+    ax: None | plt.Axes = None,
+) -> plt.Figure:
     """
     Plot the given Delaunay triangulation in 2-D
 
@@ -90,7 +101,10 @@ def delaunay_plot_2d(tri, ax=None):
 
 
 @_held_figure
-def convex_hull_plot_2d(hull, ax=None):
+def convex_hull_plot_2d(
+    hull: ConvexHull,
+    ax: None | plt.Axes = None,
+) -> plt.Figure:
     """
     Plot the given convex hull diagram in 2-D
 
@@ -149,7 +163,11 @@ def convex_hull_plot_2d(hull, ax=None):
 
 
 @_held_figure
-def voronoi_plot_2d(vor, ax=None, **kw):
+def voronoi_plot_2d(
+    vor: Voronoi,
+    ax: None | plt.Axes = None,
+    **kw: Any,
+) -> plt.Figure:
     """
     Plot the given Voronoi diagram in 2-D
 
