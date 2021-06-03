@@ -33,6 +33,13 @@ def _held_figure(func, obj, ax=None, **kw):
         ax.hold(was_held)
 
 
+if TYPE_CHECKING:
+    # Getting the semantics of `_held_figure` right is too difficult.
+    # Treat it as a decorator that returns the passed function unaltered.
+    _FT = TypeVar("_FT", bound=Callable[..., Any])
+    _held_figure: Callable[[_FT], _FT]  # type: ignore[no-redef]
+
+
 def _adjust_bounds(ax: plt.Axes, points: np.ndarray) -> None:
     margin = 0.1 * points.ptp(axis=0)
     xy_min = points.min(axis=0) - margin
@@ -88,6 +95,10 @@ def delaunay_plot_2d(
     >>> plt.show()
 
     """
+    # In practice the `None -> plt.Axes` conversion is handled by the decorator,
+    # but there is no way of typing this. Instead, we just force `ax` into the
+    # correct type via `typing.cast`
+    ax = cast("plt.Axes", ax)
     if tri.points.shape[1] != 2:
         raise ValueError("Delaunay triangulation is not 2-D")
 
@@ -149,6 +160,7 @@ def convex_hull_plot_2d(
     """
     from matplotlib.collections import LineCollection  # type: ignore[import]
 
+    ax = cast("plt.Axes", ax)
     if hull.points.shape[1] != 2:
         raise ValueError("Convex hull is not 2-D")
 
@@ -230,6 +242,7 @@ def voronoi_plot_2d(
     """
     from matplotlib.collections import LineCollection
 
+    ax = cast("plt.Axes", ax)
     if vor.points.shape[1] != 2:
         raise ValueError("Voronoi diagram is not 2-D")
 
