@@ -1505,10 +1505,8 @@ def parse_constants_2002to2014(d: str) -> Dict[str, Tuple[float, str, float]]:
     constants = {}
     for line in d.split('\n'):
         name = line[:55].rstrip()
-        val = line[55:77].replace(' ', '').replace('...', '')
-        val = float(val)
-        uncert = line[77:99].replace(' ', '').replace('(exact)', '0')
-        uncert = float(uncert)
+        val = float(line[55:77].replace(' ', '').replace('...', ''))
+        uncert = float(line[77:99].replace(' ', '').replace('(exact)', '0'))
         units = line[99:].rstrip()
         constants[name] = (val, units, uncert)
     return constants
@@ -1517,10 +1515,8 @@ def parse_constants_2018toXXXX(d: str) -> Dict[str, Tuple[float, str, float]]:
     constants = {}
     for line in d.split('\n'):
         name = line[:60].rstrip()
-        val = line[60:85].replace(' ', '').replace('...', '')
-        val = float(val)
-        uncert = line[85:110].replace(' ', '').replace('(exact)', '0')
-        uncert = float(uncert)
+        val = float(line[60:85].replace(' ', '').replace('...', ''))
+        uncert = float(line[85:110].replace(' ', '').replace('(exact)', '0'))
         units = line[110:].rstrip()
         constants[name] = (val, units, uncert)
     return constants
@@ -1651,7 +1647,9 @@ def precision(key: str) -> float:
 
 
 @overload
-def find(sub: None | str = ..., disp: L[False] = ...) -> List[str]:
+def find(  # type: ignore[misc]
+    sub: None | str = ..., disp: L[False] = ...
+) -> List[str]:
     ...
 @overload
 def find(sub: None | str = ..., disp: L[True] = ...) -> None:
@@ -1713,7 +1711,7 @@ def find(sub: None | str = None, disp: bool = False) -> None | List[str]:
     if disp:
         for key in result:
             print(key)
-        return
+        return None
     else:
         return result
 
